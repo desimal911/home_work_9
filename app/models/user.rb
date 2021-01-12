@@ -4,6 +4,8 @@ class User < ApplicationRecord
   has_many :posts
   has_many :images, as: :imageable
 
+  scope :adults, -> { where('birthday <= ?', 18.years.ago) }
+
   validates :email, :uniqueness => true, format: { with: EMAIL_VALID }
 
   def full_name
