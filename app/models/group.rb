@@ -6,10 +6,12 @@ class Group < ApplicationRecord
   has_many :banned_users, through: :banned_memberships, class_name: 'User', source: :user
   has_many :active_memberships, -> { where(status: :active) }, class_name: 'Membership'
   has_many :active_users, through: :active_memberships, class_name: 'User', source: :user
+  has_many :unactive_memberships, -> { where(status: :unactive) }, class_name: 'Membership'
+  has_many :unactive_users, through: :unactive_memberships, class_name: 'User', source: :user
   validates :name, uniqueness: true
   validates :group_type, :status, presence: true
 
-  enum status: [ :active, :archived, :removed, :permanently_removed], _default: 'active'
+  enum status: [ :active, :archived, :removed, :permanently_removed ], _default: 'active'
 
   def banned_users_emails
     banned_users.pluck(:email)
@@ -19,7 +21,7 @@ class Group < ApplicationRecord
     active_users.count
   end
 
-  def add_user_to_ban
-
+  def add_user_to_ban(user_id)
+    memberships.find_by(user_id: user_id)&.update( status: :banned )
   end
 end
