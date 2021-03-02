@@ -1,6 +1,6 @@
 class Blog::Auth < Grape::API
 
-  mamespace :auth do
+   namespace :auth do
     desc 'Log in'
     params do
       requires :email, type: String
@@ -13,16 +13,15 @@ class Blog::Auth < Grape::API
       { token: token }
     end
 
-        desc 'Check auth'
-        params do
-          requires :token, type: String
-        end
-
-        get do
-          user_data, = JWT.decode params[:token], nil, false
-          user = User.find(user_data['user_id'])
-          user
-        end
-      end
+    desc 'Check auth'
+    params do
+      requires :token, type: String
     end
+
+    get do
+      user_data, = JWT.decode params[:token], nil, false
+      user = User.find(user_data['user_id'])
+      user
+    end
+  end
 end
